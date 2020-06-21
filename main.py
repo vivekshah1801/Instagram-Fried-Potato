@@ -15,6 +15,7 @@ parser.add_argument("-f", "--file", help="path to the text file containing insta
 parser.add_argument("-q", "--quite", help="to quite all the errors", action='store_true')
 args = parser.parse_args()
 
+
 def getDetails(instaId):
     """
     @params
@@ -65,6 +66,7 @@ def main():
     except Exception:
         if not args.quite:
             print("Some Error Occured")
+
 
 if __name__ == "__main__":
     main()
