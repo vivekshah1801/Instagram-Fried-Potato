@@ -5,6 +5,7 @@
 from bs4 import BeautifulSoup,SoupStrainer
 import requests
 import argparse
+from datetime import datetime
 
 BASE_URL = "https://www.instagram.com/"
 only_meta = SoupStrainer("meta") # parse only the meta tags, leave rest of DOM tree as it it. Performace increase.
@@ -13,6 +14,7 @@ only_meta = SoupStrainer("meta") # parse only the meta tags, leave rest of DOM t
 parser = argparse.ArgumentParser(description="Get Details of Instagram handle's posts, followers and following")
 parser.add_argument("-f", "--file", help="path to the text file containing instagram Ids seprated by newline.", required=True)
 parser.add_argument("-q", "--quite", help="to quite all the errors", action='store_true')
+parser.add_argument("-o", "--output", help="path to output file.")
 args = parser.parse_args()
 
 
@@ -47,6 +49,20 @@ def getDetails(instaId):
 
 
 def main():
+    time = datetime.now().strftime("%Y-%m-%d %H:%M")
+    print(time)
+    
+    output = False
+    if args.output is not None:
+        output = True
+        
+    if output:
+        try:
+            outputfile = open(args.output, "a")
+        except:
+            if not args.quite:
+                print("Error in opening the output file")
+                return 1
     try:
         with open(args.file,"r") as instaIdList:
             print("Fetching Data...")
@@ -56,9 +72,12 @@ def main():
                         continue
                     result = getDetails(instaId.strip())
                     print(result)
+                    if output:
+                        outputfile.write("{},{},{},{},{}\n".format(time, instaId.strip(), result["followers"].strip(), result["following"].strip(), result["posts"].strip()))
                 except Exception as e:
                     if not args.quite:
                         print(e.args[0])
+        outputfile.close()
         print("Done")
     except FileNotFoundError:
         if not args.quite:
