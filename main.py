@@ -77,15 +77,16 @@ def main():
                 except Exception as e:
                     if not args.quite:
                         print(e.args[0])
-        outputfile.close()
+            if output:
+                outputfile.close()
         print("Done")
     except FileNotFoundError:
         if not args.quite:
             print("File not found. Make sure the file exists at the specified path and is accesible for reading.")
-    except Exception:
+    except Exception as e:
         if not args.quite:
             print("Some Error Occured")
-
+        print(e)
 
 if __name__ == "__main__":
     main()
